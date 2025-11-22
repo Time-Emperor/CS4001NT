@@ -16,10 +16,10 @@ public class RickshawFareCalculator {
         System.out.print("Night? (yes/no): ");
         boolean night = sc.next().equalsIgnoreCase("yes");
 
-        double fare = 50 + 15*distance + 2*time;
+        double fare = 100 + 20*distance + 2*time;
 
-        if(local && distance > 10) fare *= 0.9;
-        if(night) fare *= 1.2;
+        if(local && distance > 20) fare *= 1;
+        if(night) fare *= 2;
 
         System.out.println("Final Fare: Rs. " + (int)fare);
     }
