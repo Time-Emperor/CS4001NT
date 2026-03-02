@@ -1,0 +1,92 @@
+/**
+ * Abstract parent class that centralizes token calculation logic
+ * and holds core model attributes.
+ *
+ * NOTE: This class intentionally contains only the fields and
+ * methods required by the specification.
+ */
+public abstract class AIModel {
+
+    // Attributes
+    private String modelName;     // Name of the AI model
+    private double price;        // Price in NPR per 1 Lakh tokens
+    private int parameterCount;  // Parameters in billions
+    private int contextWindow;   // Max tokens per request
+
+    // Fixed system token overhead used in token calculations
+    private static final int SYSTEM_TOKENS = 50;
+
+    /**
+     * Constructor
+     * Accepts 4 parameters to initialize attributes.
+     */
+    public AIModel(String modelName, double price, int parameterCount, int contextWindow) {
+        this.modelName = modelName;
+        this.price = price;
+        this.parameterCount = parameterCount;
+        this.contextWindow = contextWindow;
+    }
+
+    // Getters (accessors for all attributes)
+    public String getModelName() {
+        return modelName;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public int getParameterCount() {
+        return parameterCount;
+    }
+
+    public int getContextWindow() {
+        return contextWindow;
+    }
+
+    /**
+     * Core token calculation logic.
+     *
+     * Steps:
+     * 1. Estimate input tokens from prompt text.
+     * 2. Get output tokens (user-provided value).
+     * 3. Add fixed system tokens.
+     * 4. Return true only if total tokens are within the context window.
+     */
+    public boolean calculateTokenUsage() {
+        java.util.Scanner scanner = new java.util.Scanner(System.in);
+
+        System.out.println("Enter prompt text:");
+        String promptText = scanner.nextLine();
+
+        // Very simple estimation: 1 token per 4 characters (approx.)
+        int inputTokens = Math.max(1, promptText.length() / 4);
+
+        System.out.print("Enter expected output tokens: ");
+        int outputTokens;
+        try {
+            outputTokens = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid number. Treating output tokens as 0.");
+            outputTokens = 0;
+        }
+
+        int totalTokens = inputTokens + outputTokens + SYSTEM_TOKENS;
+
+        System.out.println("---- Token Usage Summary ----");
+        System.out.println("Model: " + modelName);
+        System.out.println("Input tokens (estimated): " + inputTokens);
+        System.out.println("Output tokens: " + outputTokens);
+        System.out.println("System tokens: " + SYSTEM_TOKENS);
+        System.out.println("Total tokens: " + totalTokens);
+        System.out.println("Context window: " + contextWindow);
+
+        return totalTokens <= contextWindow;
+    }
+
+    /**
+     * Abstract display method to be implemented by subclasses.
+     */
+    public abstract String display();
+}
+
