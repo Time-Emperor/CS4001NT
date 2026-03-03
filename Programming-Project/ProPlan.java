@@ -1,15 +1,9 @@
-/**
- * Pro plan for teams.
- * Unlimited requests, but strictly bound by context window limits.
- */
 public class ProPlan extends AIModel {
 
-    // Max team members allowed (also used as available slots counter).
     private int availableSlots;
 
     /**
-     * Constructor
-     * Accepts 5 parameters: passes 4 to super, initializes availableSlots.
+     * Constructor to initialize ProPlan 
      */
     public ProPlan(String modelName,
                    double price,
@@ -41,10 +35,8 @@ public class ProPlan extends AIModel {
 
     /**
      * Single validation logic:
-     * 1. Context Check via AIModel.calculateTokenUsage().
-     * 2. If valid: success message (no quota decrement).
-     * 3. If invalid: error message.
-     */
+        * Only checks context limits since Pro plan has no quota restrictions.
+        */
     public String usePrompt() {
         boolean withinContext = calculateTokenUsage();
         if (withinContext) {

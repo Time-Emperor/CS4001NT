@@ -1,10 +1,4 @@
-/**
- * Abstract parent class that centralizes token calculation logic
- * and holds core model attributes.
- *
- * NOTE: This class intentionally contains only the fields and
- * methods required by the specification.
- */
+import java.util.Scanner;
 public abstract class AIModel {
 
     // Attributes
@@ -13,12 +7,11 @@ public abstract class AIModel {
     private int parameterCount;  // Parameters in billions
     private int contextWindow;   // Max tokens per request
 
-    // Fixed system token overhead used in token calculations
+    // Fixed system tokens added to every request (for internal processing)
     private static final int SYSTEM_TOKENS = 50;
 
     /**
-     * Constructor
-     * Accepts 4 parameters to initialize attributes.
+     * Constructor to initialize AIModel with model details.
      */
     public AIModel(String modelName, double price, int parameterCount, int contextWindow) {
         this.modelName = modelName;
@@ -27,7 +20,7 @@ public abstract class AIModel {
         this.contextWindow = contextWindow;
     }
 
-    // Getters (accessors for all attributes)
+    // Getters
     public String getModelName() {
         return modelName;
     }
@@ -46,12 +39,8 @@ public abstract class AIModel {
 
     /**
      * Core token calculation logic.
-     *
-     * Steps:
-     * 1. Estimate input tokens from prompt text.
-     * 2. Get output tokens (user-provided value).
-     * 3. Add fixed system tokens.
-     * 4. Return true only if total tokens are within the context window.
+      * Prompts user for input and output token estimates, adds system tokens, and checks against context window.
+      * Returns true if total tokens are within the context window, false otherwise.
      */
     public boolean calculateTokenUsage() {
         java.util.Scanner scanner = new java.util.Scanner(System.in);
@@ -85,7 +74,7 @@ public abstract class AIModel {
     }
 
     /**
-     * Abstract display method to be implemented by subclasses.
+     * Abstract
      */
     public abstract String display();
 }

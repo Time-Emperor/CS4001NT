@@ -1,15 +1,11 @@
-/**
- * Personal plan for recreational users.
- * Enforces both a monthly request quota and context window limits.
- */
+
 public class PersonalPlan extends AIModel {
 
-    // Monthly Prompt Quota: tracks remaining requests for the month.
+    // Monthly Prompt Quota:
     private int promptsRemaining;
 
     /**
-     * Constructor
-     * Accepts 5 parameters: passes 4 to super, initializes promptsRemaining.
+     * Constructor to initialize PersonalPlan with model details and initial monthly quota.
      */
     public PersonalPlan(String modelName,
                         double price,
@@ -22,7 +18,6 @@ public class PersonalPlan extends AIModel {
 
     /**
      * Adds prompts to promptsRemaining.
-     * Validation: amount must be positive.
      */
     public String purchasePrompts(int amount) {
         if (amount <= 0) {
@@ -36,7 +31,7 @@ public class PersonalPlan extends AIModel {
     /**
      * Dual Validation Logic for using a prompt:
      * 1. Quota Check
-     * 2. Context Check via AIModel.calculateTokenUsage()
+     * 2. Context Check
      */
     public String usePrompt() {
         // 1. Quota Check
@@ -50,7 +45,7 @@ public class PersonalPlan extends AIModel {
             return "Context limit exceeded";
         }
 
-        // 3. Success: decrement quota
+        // 3. Success:
         promptsRemaining--;
         return "Prompt processed successfully. Prompts remaining: " + promptsRemaining;
     }
@@ -65,7 +60,7 @@ public class PersonalPlan extends AIModel {
                 + "Prompts remaining (Monthly Quota): " + promptsRemaining;
     }
 
-    // Getter to help demonstration in Main (not required by spec but simple and harmless)
+    // Getter for promptsRemaining
     public int getPromptsRemaining() {
         return promptsRemaining;
     }
