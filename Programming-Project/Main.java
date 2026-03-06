@@ -3,8 +3,6 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-
         // 1. Initializing objects for PersonalPlan and ProPlan
         PersonalPlan personal = new PersonalPlan(
                 "Personal-GPT", 1000.0, 10, 2000, 5  // small quota (5) for demo
@@ -41,27 +39,25 @@ public class Main {
 
         // 3. Context Limits:
         System.out.println("=== Testing Context Limits (PersonalPlan) ===");
-        System.out.println("Now enter a very long prompt so that (Input + Output + System) > contextWindow.");
-        System.out.println("This should cause: Context limit exceeded");
+        System.out.println("Now enter a very long prompt");
         String personalContextResult = personal.usePrompt();
         System.out.println("Result: " + personalContextResult);
         System.out.println();
 
         System.out.println("=== Testing Context Limits (ProPlan) ===");
-        System.out.println("Now enter another very long prompt for ProPlan.");
+        System.out.println("Now enter a very long prompt");
         String proContextResult = pro.usePrompt();
         System.out.println("Result: " + proContextResult);
         System.out.println();
 
         // 4. ProPlan:
         System.out.println("=== Testing ProPlan with valid context ===");
-        System.out.println("Enter a short prompt for ProPlan to stay within context window.");
+        System.out.println("Enter a short prompt for ProPlan");
         String proValidResult = pro.usePrompt();
         System.out.println("Result: " + proValidResult);
 
         System.out.println();
         System.out.println("=== Demo Complete ===");
-        scanner.close();
     }
 }
 

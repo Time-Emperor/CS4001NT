@@ -5,7 +5,7 @@ public class PersonalPlan extends AIModel {
     private int promptsRemaining;
 
     /**
-     * Constructor to initialize PersonalPlan with model details and initial monthly quota.
+     * Constructor to initialize PersonalPlan.
      */
     public PersonalPlan(String modelName,
                         double price,

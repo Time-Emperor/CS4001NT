@@ -7,11 +7,11 @@ public abstract class AIModel {
     private int parameterCount;  // Parameters in billions
     private int contextWindow;   // Max tokens per request
 
-    // Fixed system tokens added to every request (for internal processing)
     private static final int SYSTEM_TOKENS = 50;
+    private static final Scanner SCANNER = new Scanner(System.in);
 
     /**
-     * Constructor to initialize AIModel with model details.
+     * Constructor
      */
     public AIModel(String modelName, double price, int parameterCount, int contextWindow) {
         this.modelName = modelName;
@@ -39,22 +39,18 @@ public abstract class AIModel {
 
     /**
      * Core token calculation logic.
-      * Prompts user for input and output token estimates, adds system tokens, and checks against context window.
-      * Returns true if total tokens are within the context window, false otherwise.
      */
     public boolean calculateTokenUsage() {
-        java.util.Scanner scanner = new java.util.Scanner(System.in);
-
         System.out.println("Enter prompt text:");
-        String promptText = scanner.nextLine();
+        String promptText = SCANNER.nextLine();
 
-        // Very simple estimation: 1 token per 4 characters (approx.)
+        // Very simple estimation: 1 token per 4 characters
         int inputTokens = Math.max(1, promptText.length() / 4);
 
         System.out.print("Enter expected output tokens: ");
         int outputTokens;
         try {
-            outputTokens = Integer.parseInt(scanner.nextLine());
+            outputTokens = Integer.parseInt(SCANNER.nextLine());
         } catch (NumberFormatException e) {
             System.out.println("Invalid number. Treating output tokens as 0.");
             outputTokens = 0;
