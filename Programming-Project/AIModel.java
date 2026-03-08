@@ -1,4 +1,3 @@
-import java.util.Scanner;
 public abstract class AIModel {
 
     // Attributes
@@ -8,7 +7,6 @@ public abstract class AIModel {
     private int contextWindow;   // Max tokens per request
 
     private static final int SYSTEM_TOKENS = 50;
-    private static final Scanner SCANNER = new Scanner(System.in);
 
     /**
      * Constructor
@@ -41,8 +39,10 @@ public abstract class AIModel {
      * Core token calculation logic.
      */
     public boolean calculateTokenUsage() {
+        java.util.Scanner scanner = new java.util.Scanner(System.in);
+
         System.out.println("Enter prompt text:");
-        String promptText = SCANNER.nextLine();
+        String promptText = scanner.nextLine();
 
         // Very simple estimation: 1 token per 4 characters
         int inputTokens = Math.max(1, promptText.length() / 4);
@@ -50,7 +50,7 @@ public abstract class AIModel {
         System.out.print("Enter expected output tokens: ");
         int outputTokens;
         try {
-            outputTokens = Integer.parseInt(SCANNER.nextLine());
+            outputTokens = Integer.parseInt(scanner.nextLine());
         } catch (NumberFormatException e) {
             System.out.println("Invalid number. Treating output tokens as 0.");
             outputTokens = 0;
