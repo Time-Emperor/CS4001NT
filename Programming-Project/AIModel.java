@@ -1,10 +1,10 @@
 public abstract class AIModel {
 
     // Attributes
-    private String modelName;     // Name of the AI model
-    private double price;        // Price in NPR per 1 Lakh tokens
-    private int parameterCount;  // Parameters in billions
-    private int contextWindow;   // Max tokens per request
+    private String modelName; // Name of the AI model
+    private double price; // Price in NPR per 1 Lakh tokens
+    private int parameterCount; // Parameters in billions
+    private int contextWindow; // Max tokens per request
 
     private static final int SYSTEM_TOKENS = 50;
 
@@ -74,4 +74,3 @@ public abstract class AIModel {
      */
     public abstract String display();
 }
-
