@@ -1,7 +1,0 @@
-./SubscriptionGUI.java
-./src/main/java/com/aimodels/model/AIModel.java
-./src/main/java/com/aimodels/model/PersonalPlan.java
-./src/main/java/com/aimodels/model/ProPlan.java
-./src/main/java/com/aimodels/exception/ModelException.java
-./src/main/java/com/aimodels/util/Constants.java
-./src/main/java/com/aimodels/gui/ModelManagerApp.java
