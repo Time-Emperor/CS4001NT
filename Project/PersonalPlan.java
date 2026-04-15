@@ -1,5 +1,5 @@
 public class PersonalPlan extends AIModel {
-    private int promptRemaining;
+    private int promptsRemaining;
 
     public PersonalPlan(String modelName, double price, int parameterCount, int contextWindow) {
         super(modelName, price, parameterCount, contextWindow);
@@ -7,13 +7,13 @@ public class PersonalPlan extends AIModel {
 
     public void buyPrompts(int count) {
         if (count > 0) {
-            promptRemaining += count;
+            promptsRemaining += count;
 
         }
     }
 
-    public int getPromptRemaining() {
-        return promptRemaining;
+    public int getPromptsRemaining() {
+        return promptsRemaining;
     }
 
     @Override
@@ -23,20 +23,18 @@ public class PersonalPlan extends AIModel {
                 "Price: $" + getPrice() + " per month\n" +
                 "Parameter Count: " + getParameterCount() + "\n" +
                 "Context Window: " + getContextWindow() + " tokens\n" +
-                "Remaining Prompts: " + promptRemaining;
+                "Remaining Prompts: " + promptsRemaining;
     }
 
     @Override
-    public String enterPrompt(String prompt, int expectedTokensCount) {
-        int tokens = calculateTokens(prompt);
-        if (promptRemaining > 0 && tokens <= getContextWindow()) {
-            promptRemaining--;
-            return "Prompt accepted: Tokens " + tokens + " Prompts left " + promptRemaining;
-        } else if (promptRemaining <=0) {
+    public String enterPrompt(String prompt, int tokens) {
+        if (promptsRemaining > 0 && tokens <= getContextWindow()) {
+            promptsRemaining--;
+            return "Prompt accepted: Tokens " + tokens + " Prompts left " + promptsRemaining;
+        } else if (promptsRemaining <= 0) {
             return "Error: No remaining prompts. Please buy more prompts to continue.";
         } else {
             return "Error: Prompt exceeds the context window of " + getContextWindow() + " tokens.";
         }
-
     }
 }
