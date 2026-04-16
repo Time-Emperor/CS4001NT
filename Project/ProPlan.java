@@ -1,21 +1,23 @@
 public class ProPlan extends AIModel {
     private int availableSlots;
 
-    public ProPlan(String modelName, double price, int parameterCount, int contextWindow) {
+    public ProPlan(String modelName, double price, int parameterCount, int contextWindow, int availableSlots) {
         super(modelName, price, parameterCount, contextWindow);
-        this.availableSlots = 0;
+        this.availableSlots = availableSlots;
     }
 
-    public void addTeamMember() {
-        availableSlots++;
-    }
-
-    public void removeTeamMember() {
+    public String addTeamMember(String name) {
         if (availableSlots > 0) {
             availableSlots--;
+            return "Member " + name + " added. Remaining slots: " + availableSlots;
         } else {
-            System.out.println("No team members to remove.");
+            return "Error: No available slots and team member cannot be added.";
         }
+    }
+
+    public String removeTeamMember(String name) {
+        availableSlots++;
+        return "Member " + name + " removed. New available slots: " + availableSlots;
     }
 
     public int getAvailableSlots() {
@@ -24,22 +26,16 @@ public class ProPlan extends AIModel {
 
     @Override
     public String display() {
-        return "Plan: Pro\n" +
-                "Model Name: " + getModelName() + "\n" +
-                "Price: $" + getPrice() + " per month\n" +
-                "Parameter Count: " + getParameterCount() + "\n" +
-                "Context Window: " + getContextWindow() + " tokens\n" +
-                "Available Team Slots: " + availableSlots;
+        return "Pro Plan:\n" + super.display() +
+                "\nAvailable Team Slots: " + availableSlots;
     }
 
     @Override
     public String enterPrompt(String prompt, int tokens) {
         if (tokens <= getContextWindow()) {
-            int remaining = getContextWindow() - tokens;
-            return "Prompt accepted. Remaining tokens: " + remaining;
+            return "Prompt accepted for Pro Plan. Token usage: " + tokens;
         } else {
-            return "Failed to enter prompt. Prompt exceeds context window. Please shorten your prompt.";
+            return "Failed to enter prompt. Prompt exceeds context window.";
         }
-
     }
 }

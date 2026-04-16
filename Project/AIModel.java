@@ -15,7 +15,6 @@ public abstract class AIModel {
     private int parameterCount;
     private int contextWindow;
 
-
     public AIModel(String modelName, double price, int parameterCount, int contextWindow) {
         this.modelName = modelName;
         this.price = price;
@@ -46,6 +45,13 @@ public abstract class AIModel {
         String[] tokens = prompt.split("\\s+");
         return tokens.length;
     }
-    public abstract String display();
+
+    public String display() {
+        return "Model Name: " + modelName +
+                "\nPrice: " + price + " NPR per 1 Lakh tokens" +
+                "\nParameter Count: " + parameterCount + "B" +
+                "\nContext Window: " + contextWindow + "tokens";
+    }
+
     public abstract String enterPrompt(String prompt, int tokens);
 }

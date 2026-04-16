@@ -1,15 +1,17 @@
 public class PersonalPlan extends AIModel {
     private int promptsRemaining;
 
-    public PersonalPlan(String modelName, double price, int parameterCount, int contextWindow) {
+    public PersonalPlan(String modelName, double price, int parameterCount, int contextWindow, int promptsRemaining) {
         super(modelName, price, parameterCount, contextWindow);
+        this.promptsRemaining = promptsRemaining;
     }
 
-    public void buyPrompts(int count) {
-        if (count > 0) {
-            promptsRemaining += count;
-
+    public String buyPrompts(int count) {
+        if (count < 0) {
+            return "User must enter positive value or user must upgrade to pro plan.";
         }
+        promptsRemaining += count;
+        return "Prompts added successfully. New quota: " + promptsRemaining;
     }
 
     public int getPromptsRemaining() {
@@ -18,23 +20,19 @@ public class PersonalPlan extends AIModel {
 
     @Override
     public String display() {
-        return "Personal: \n" +
-                "Model Name: " + getModelName() + "\n" +
-                "Price: $" + getPrice() + " per month\n" +
-                "Parameter Count: " + getParameterCount() + "\n" +
-                "Context Window: " + getContextWindow() + " tokens\n" +
-                "Remaining Prompts: " + promptsRemaining;
+        return "Personal Plan:\n" + super.display() +
+                "\nRemaining Prompts: " + promptsRemaining;
     }
 
     @Override
-    public String enterPrompt(String prompt, int tokens) {
-        if (promptsRemaining > 0 && tokens <= getContextWindow()) {
+    public String enterPrompt(String promptText, int responseLength) {
+        if (promptsRemaining > 0) {
             promptsRemaining--;
-            return "Prompt accepted: Tokens " + tokens + " Prompts left " + promptsRemaining;
-        } else if (promptsRemaining <= 0) {
-            return "Error: No remaining prompts. Please buy more prompts to continue.";
+            return "Prompt Details: " + promptText +
+                    "\nToken Usage: " + responseLength +
+                    "\nRemaining Prompts: " + promptsRemaining;
         } else {
-            return "Error: Prompt exceeds the context window of " + getContextWindow() + " tokens.";
+            return "Monthly plan has been reached.";
         }
     }
 }

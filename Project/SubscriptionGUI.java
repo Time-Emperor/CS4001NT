@@ -6,72 +6,80 @@ public class SubscriptionGUI extends JFrame {
 
     private ArrayList<AIModel> modelList = new ArrayList<>();
 
-    private JTextField modelNameField, priceField, parameterCountField, contextWindowField, promptsSlotsField,
-            promptTextField, indexField;
+
+    private JTextField modelNameField, priceField, parameterCountField, contextWindowField,
+            promptsField, slotsField, promptTextField, responseLengthField,
+            teamMemberNameField, indexField;
     private JTextArea outputArea;
 
     public SubscriptionGUI() {
-        setTitle("AI Model Subscription");
-        setSize(750, 700);
+        setTitle("AI Model Subscription Management System");
+        setSize(850, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        JPanel inputPanel = new JPanel(new GridLayout(7, 2));
-        inputPanel.setBorder(BorderFactory.createTitledBorder("AI Model Details"));
+        JPanel inputPanel = new JPanel(new GridLayout(10, 2, 5, 5));
+        inputPanel.setBorder(BorderFactory.createTitledBorder("AI Model Subscription Details"));
 
-        inputPanel.add(new JLabel("Model Name:"));
+        inputPanel.add(new JLabel("1. Model Name:"));
         modelNameField = new JTextField();
         inputPanel.add(modelNameField);
 
-        inputPanel.add(new JLabel("Price:"));
+        inputPanel.add(new JLabel("2. Pricing (per 1 Lakh tokens):"));
         priceField = new JTextField();
         inputPanel.add(priceField);
 
-        inputPanel.add(new JLabel("Parameter Count:"));
+        inputPanel.add(new JLabel("3. Parameter Count (billions):"));
         parameterCountField = new JTextField();
         inputPanel.add(parameterCountField);
 
-        inputPanel.add(new JLabel("Context Window:"));
+        inputPanel.add(new JLabel("4. Context Window (K tokens):"));
         contextWindowField = new JTextField();
         inputPanel.add(contextWindowField);
 
-        inputPanel.add(new JLabel("Prompts/Team Slots:"));
-        promptsSlotsField = new JTextField();
-        inputPanel.add(promptsSlotsField);
+        inputPanel.add(new JLabel("5. Initial Prompts Quota (Personal):"));
+        promptsField = new JTextField();
+        inputPanel.add(promptsField);
 
-        inputPanel.add(new JLabel("Prompt Text:"));
+        inputPanel.add(new JLabel("6. Initial Team Slots (Pro):"));
+        slotsField = new JTextField();
+        inputPanel.add(slotsField);
+
+        inputPanel.add(new JLabel("7. Prompt Text:"));
         promptTextField = new JTextField();
         inputPanel.add(promptTextField);
 
-        inputPanel.add(new JLabel("Model Index:"));
+        inputPanel.add(new JLabel("8. Response Length (tokens):"));
+        responseLengthField = new JTextField();
+        inputPanel.add(responseLengthField);
+
+        inputPanel.add(new JLabel("9. Team Member Name:"));
+        teamMemberNameField = new JTextField();
+        inputPanel.add(teamMemberNameField);
+
+        inputPanel.add(new JLabel("10. Index Number:"));
         indexField = new JTextField();
         inputPanel.add(indexField);
 
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 8));
-     
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+
         JButton addPersonalBtn = new JButton("Add Personal Plan");
         JButton addProBtn = new JButton("Add Pro Plan");
-        JButton enterPromptBtn = new JButton("Give Prompt");
-        JButton addTeamBtn = new JButton("Add Team Member");
+        JButton displayAllBtn = new JButton("Display All");
+        JButton clearBtn = new JButton("Clear");
+        JButton givePromptBtn = new JButton("Give a Prompt");
+        JButton addTeamMemberBtn = new JButton("Add Team Member");
+        JButton removeMemberBtn = new JButton("Remove Team Member");
         JButton checkTypeBtn = new JButton("Check Plan Type");
-        JButton displayBtn = new JButton("Display All");
-        JButton clearBtn = new JButton("Clear Fields");
-
-        JButton buyPromptsBtn = new JButton("Buy Prompts");
-        JButton removeBtn = new JButton("Remove Model");
-        JButton exitBtn = new JButton("Exit");
 
         buttonPanel.add(addPersonalBtn);
         buttonPanel.add(addProBtn);
-        buttonPanel.add(enterPromptBtn);
-        buttonPanel.add(addTeamBtn);
-        buttonPanel.add(checkTypeBtn);
-        buttonPanel.add(displayBtn);
-        buttonPanel.add(buyPromptsBtn);
-        buttonPanel.add(removeBtn);
+        buttonPanel.add(displayAllBtn);
         buttonPanel.add(clearBtn);
-        buttonPanel.add(exitBtn);
-
+        buttonPanel.add(givePromptBtn);
+        buttonPanel.add(addTeamMemberBtn);
+        buttonPanel.add(removeMemberBtn);
+        buttonPanel.add(checkTypeBtn);
 
         JPanel topContainer = new JPanel(new BorderLayout());
         topContainer.add(inputPanel, BorderLayout.NORTH);
@@ -84,119 +92,47 @@ public class SubscriptionGUI extends JFrame {
         JScrollPane scrollPane = new JScrollPane(outputArea);
         add(scrollPane, BorderLayout.CENTER);
 
+        // --- Button Listeners ---
+
         addPersonalBtn.addActionListener(e -> {
             try {
-                String modelName = modelNameField.getText();
+                String name = modelNameField.getText();
                 double price = Double.parseDouble(priceField.getText());
-                int parameterCount = Integer.parseInt(parameterCountField.getText());
-                int contextWindow = Integer.parseInt(contextWindowField.getText());
-                int prompts = Integer.parseInt(promptsSlotsField.getText());
+                int params = Integer.parseInt(parameterCountField.getText());
+                int window = Integer.parseInt(contextWindowField.getText());
+                int prompts = Integer.parseInt(promptsField.getText());
 
-                PersonalPlan personalPlan = new PersonalPlan(modelName, price, parameterCount, contextWindow);
-                personalPlan.buyPrompts(prompts);
-                modelList.add(personalPlan);
-                outputArea.append("Personal Plan added: " + modelName + "\n");
+                PersonalPlan plan = new PersonalPlan(name, price, params, window, prompts);
+                modelList.add(plan);
+                JOptionPane.showMessageDialog(this, "Personal Plan Added successfully.");
             } catch (NumberFormatException ex) {
-                outputArea.append("Error: Please enter valid numeric values.\n");
+                JOptionPane.showMessageDialog(this,
+                        "Please fill all required numeric fields for Personal Plan correctly.");
             }
         });
 
         addProBtn.addActionListener(e -> {
             try {
-                String modelName = modelNameField.getText();
+                String name = modelNameField.getText();
                 double price = Double.parseDouble(priceField.getText());
-                int parameterCount = Integer.parseInt(parameterCountField.getText());
-                int contextWindow = Integer.parseInt(contextWindowField.getText());
-                int teamSlots = Integer.parseInt(promptsSlotsField.getText());
+                int params = Integer.parseInt(parameterCountField.getText());
+                int window = Integer.parseInt(contextWindowField.getText());
+                int slots = Integer.parseInt(slotsField.getText());
 
-                ProPlan proPlan = new ProPlan(modelName, price, parameterCount, contextWindow);
-                for (int i = 0; i < teamSlots; i++) {
-                    proPlan.addTeamMember();
-                }
-                modelList.add(proPlan);
-                outputArea.append("Pro Plan added: " + modelName + "\n");
+                ProPlan plan = new ProPlan(name, price, params, window, slots);
+                modelList.add(plan);
+                JOptionPane.showMessageDialog(this, "Pro Plan Added successfully.");
             } catch (NumberFormatException ex) {
-                outputArea.append("Error: Please enter valid numeric values.\n");
+                JOptionPane.showMessageDialog(this, "Please fill all required numeric fields for Pro Plan correctly.");
             }
         });
 
-        enterPromptBtn.addActionListener(e -> {
-            int index = getValidIndex();
-            if (index != -1) {
-                AIModel model = modelList.get(index);
-                String prompt = promptTextField.getText();
-                String result = model.enterPrompt(prompt, model.calculateTokens(prompt));
-                outputArea.append("Model " + model.getModelName() + ": " + result + "\n");
-            } else {
-                outputArea.append("Error: Invalid model index or out of bounds.\n");
-            }
-        });
-
-        addTeamBtn.addActionListener(e -> {
-            int index = getValidIndex();
-            if (index != -1) {
-                AIModel model = modelList.get(index);
-                if (model instanceof ProPlan) {
-                    ProPlan proPlan = (ProPlan) model;
-                    proPlan.addTeamMember();
-                    outputArea.append("Added team member. Total slots: " + proPlan.getAvailableSlots() + "\n");
-                } else {
-                    outputArea.append("Error: Selected model is not a Pro Plan.\n");
-                }
-            } else {
-                outputArea.append("Error: Invalid model index.\n");
-            }
-        });
-
-        checkTypeBtn.addActionListener(e -> {
-            int index = getValidIndex();
-            if (index != -1) {
-                AIModel model = modelList.get(index);
-                if (model instanceof PersonalPlan) {
-                    outputArea.append("Model at index " + index + " is a Personal Plan.\n");
-                } else if (model instanceof ProPlan) {
-                    outputArea.append("Model at index " + index + " is a Pro Plan.\n");
-                }
-            } else {
-                outputArea.append("Error: Invalid model index.\n");
-            }
-        });
-
-        displayBtn.addActionListener(e -> {
-            outputArea.append("--- Current AI Models ---\n");
+        displayAllBtn.addActionListener(e -> {
+            outputArea.setText("");
             for (int i = 0; i < modelList.size(); i++) {
-                outputArea.append("Index " + i + ":\n" + modelList.get(i).display() + "\n");
-            }
-        });
-
-        buyPromptsBtn.addActionListener(e -> {
-            int index = getValidIndex();
-            if (index != -1) {
-                try {
-                    int prompts = Integer.parseInt(promptsSlotsField.getText());
-                    AIModel model = modelList.get(index);
-                    if (model instanceof PersonalPlan) {
-                        PersonalPlan personalPlan = (PersonalPlan) model;
-                        personalPlan.buyPrompts(prompts);
-                        outputArea.append("Bought " + prompts + " prompts for model: " + personalPlan.getModelName() + "\n");
-                    } else {
-                        outputArea.append("Error: Selected model is not a Personal Plan.\n");
-                    }
-                } catch (NumberFormatException ex) {
-                    outputArea.append("Error: Please enter a valid number of prompts in the Prompts field.\n");
-                }
-            } else {
-                outputArea.append("Error: Invalid model index.\n");
-            }
-        });
-
-        removeBtn.addActionListener(e -> {
-            int index = getValidIndex();
-            if (index != -1) {
-                AIModel removedModel = modelList.remove(index);
-                outputArea.append("Removed model: " + removedModel.getModelName() + "\n");
-            } else {
-                outputArea.append("Error: Invalid model index.\n");
+                outputArea.append("Plan Index: " + i + "\n");
+                outputArea.append(modelList.get(i).display() + "\n");
+                outputArea.append("----------------------------\n");
             }
         });
 
@@ -205,34 +141,105 @@ public class SubscriptionGUI extends JFrame {
             priceField.setText("");
             parameterCountField.setText("");
             contextWindowField.setText("");
-            promptsSlotsField.setText("");
+            promptsField.setText("");
+            slotsField.setText("");
             promptTextField.setText("");
+            responseLengthField.setText("");
+            teamMemberNameField.setText("");
             indexField.setText("");
-            outputArea.setText("");
         });
 
-        exitBtn.addActionListener(e -> System.exit(0));
+        givePromptBtn.addActionListener(e -> {
+            int index = getValidIndex();
+            if (index != -1) {
+                AIModel model = modelList.get(index);
+                if (model instanceof PersonalPlan) {
+                    try {
+                        String text = promptTextField.getText();
+                        int length = Integer.parseInt(responseLengthField.getText());
+                        String result = ((PersonalPlan) model).enterPrompt(text, length);
+                        outputArea.append("Model Result:\n" + result + "\n");
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(this, "Please enter a valid response length.");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                            "This operation is only available for Personal Plan subscriptions.");
+                }
+            }
+        });
+
+        addTeamMemberBtn.addActionListener(e -> {
+            int index = getValidIndex();
+            if (index != -1) {
+                AIModel model = modelList.get(index);
+                if (model instanceof ProPlan) {
+                    String name = teamMemberNameField.getText();
+                    if (name.isEmpty()) {
+                        JOptionPane.showMessageDialog(this, "Please enter a team member name.");
+                        return;
+                    }
+                    String result = ((ProPlan) model).addTeamMember(name);
+                    outputArea.append(result + "\n");
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                            "Team collaboration is only available for Pro Plan subscriptions.");
+                }
+            }
+        });
+
+        removeMemberBtn.addActionListener(e -> {
+            int index = getValidIndex();
+            if (index != -1) {
+                AIModel model = modelList.get(index);
+                if (model instanceof ProPlan) {
+                    String name = teamMemberNameField.getText();
+                    if (name.isEmpty()) {
+                        JOptionPane.showMessageDialog(this, "Please enter a team member name to remove.");
+                        return;
+                    }
+                    String result = ((ProPlan) model).removeTeamMember(name);
+                    outputArea.append(result + "\n");
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                            "Team collaboration is only available for Pro Plan subscriptions.");
+                }
+            }
+        });
+
+        checkTypeBtn.addActionListener(e -> {
+            int index = getValidIndex();
+            if (index != -1) {
+                AIModel model = modelList.get(index);
+                if (model instanceof PersonalPlan) {
+                    JOptionPane.showMessageDialog(this, "Plan Type: Personal Plan");
+                } else if (model instanceof ProPlan) {
+                    JOptionPane.showMessageDialog(this, "Plan Type: Pro Plan");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Plan Type: Unknown");
+                }
+            }
+        });
     }
 
     private int getValidIndex() {
+        int displayNumber = -1;
         try {
-            int index = Integer.parseInt(indexField.getText());
-            if (index >= 0 && index < modelList.size()) {
-                return index;
+            String inputText = indexField.getText();
+            displayNumber = Integer.parseInt(inputText);
+            if (displayNumber < 0 || displayNumber >= modelList.size()) {
+                JOptionPane.showMessageDialog(this,
+                        "Index falls outside the acceptable range (0 to " + (modelList.size() - 1) + ").");
+                return -1;
             }
         } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Input cannot be parsed as an integer. Please enter a valid number.");
             return -1;
         }
-        return -1;
+        return displayNumber;
     }
 
     public static void main(String[] args) {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
         SwingUtilities.invokeLater(() -> new SubscriptionGUI().setVisible(true));
     }
 }
