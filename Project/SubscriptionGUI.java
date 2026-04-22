@@ -1,11 +1,11 @@
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.io.*;
 
 public class SubscriptionGUI extends JFrame {
 
     private ArrayList<AIModel> modelList = new ArrayList<>();
-
 
     private JTextField modelNameField, priceField, parameterCountField, contextWindowField,
             promptsField, slotsField, promptTextField, responseLengthField,
@@ -25,15 +25,15 @@ public class SubscriptionGUI extends JFrame {
         modelNameField = new JTextField();
         inputPanel.add(modelNameField);
 
-        inputPanel.add(new JLabel("2. Pricing (per 1 Lakh tokens):"));
+        inputPanel.add(new JLabel("2. Pricing (per 1 Lakh Tokens):"));
         priceField = new JTextField();
         inputPanel.add(priceField);
 
-        inputPanel.add(new JLabel("3. Parameter Count (billions):"));
+        inputPanel.add(new JLabel("3. Parameter Count (Billions):"));
         parameterCountField = new JTextField();
         inputPanel.add(parameterCountField);
 
-        inputPanel.add(new JLabel("4. Context Window (K tokens):"));
+        inputPanel.add(new JLabel("4. Context Window (Tokens):"));
         contextWindowField = new JTextField();
         inputPanel.add(contextWindowField);
 
@@ -61,7 +61,8 @@ public class SubscriptionGUI extends JFrame {
         indexField = new JTextField();
         inputPanel.add(indexField);
 
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        JPanel buttonPanel = new JPanel(new GridLayout(0, 4, 10, 10));
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JButton addPersonalBtn = new JButton("Add Personal Plan");
         JButton addProBtn = new JButton("Add Pro Plan");
@@ -71,6 +72,9 @@ public class SubscriptionGUI extends JFrame {
         JButton addTeamMemberBtn = new JButton("Add Team Member");
         JButton removeMemberBtn = new JButton("Remove Team Member");
         JButton checkTypeBtn = new JButton("Check Plan Type");
+        JButton exportBtn = new JButton("Export to File");
+        JButton loadBtn = new JButton("Load from File");
+        JButton buyPromptsBtn = new JButton("Buy Prompts");
 
         buttonPanel.add(addPersonalBtn);
         buttonPanel.add(addProBtn);
@@ -80,6 +84,9 @@ public class SubscriptionGUI extends JFrame {
         buttonPanel.add(addTeamMemberBtn);
         buttonPanel.add(removeMemberBtn);
         buttonPanel.add(checkTypeBtn);
+        buttonPanel.add(exportBtn);
+        buttonPanel.add(loadBtn);
+        buttonPanel.add(buyPromptsBtn);
 
         JPanel topContainer = new JPanel(new BorderLayout());
         topContainer.add(inputPanel, BorderLayout.NORTH);
@@ -107,7 +114,7 @@ public class SubscriptionGUI extends JFrame {
                 JOptionPane.showMessageDialog(this, "Personal Plan Added successfully.");
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this,
-                        "Please fill all required numeric fields for Personal Plan correctly.");
+                        "Please fill all required numeric fields (Price, Parameters, Context Window, Quota) correctly.");
             }
         });
 
@@ -153,18 +160,17 @@ public class SubscriptionGUI extends JFrame {
             int index = getValidIndex();
             if (index != -1) {
                 AIModel model = modelList.get(index);
-                if (model instanceof PersonalPlan) {
-                    try {
-                        String text = promptTextField.getText();
-                        int length = Integer.parseInt(responseLengthField.getText());
-                        String result = ((PersonalPlan) model).enterPrompt(text, length);
-                        outputArea.append("Model Result:\n" + result + "\n");
-                    } catch (NumberFormatException ex) {
-                        JOptionPane.showMessageDialog(this, "Please enter a valid response length.");
+                try {
+                    String text = promptTextField.getText();
+                    if (text.isEmpty()) {
+                        JOptionPane.showMessageDialog(this, "Please enter prompt text.");
+                        return;
                     }
-                } else {
-                    JOptionPane.showMessageDialog(this,
-                            "This operation is only available for Personal Plan subscriptions.");
+                    int length = Integer.parseInt(responseLengthField.getText());
+                    String result = model.enterPrompt(text, length);
+                    outputArea.append("Model Result (Index " + index + "):\n" + result + "\n");
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(this, "Please enter a valid numeric response length.");
                 }
             }
         });
@@ -220,6 +226,60 @@ public class SubscriptionGUI extends JFrame {
                 }
             }
         });
+
+        exportBtn.addActionListener(e -> exportToFile());
+        loadBtn.addActionListener(e -> loadFromFile());
+
+        buyPromptsBtn.addActionListener(e -> {
+            int index = getValidIndex();
+            if (index != -1) {
+                AIModel model = modelList.get(index);
+                if (model instanceof PersonalPlan) {
+                    try {
+                        int count = Integer.parseInt(promptsField.getText());
+                        String result = ((PersonalPlan) model).buyPrompts(count);
+                        outputArea.append(result + "\n");
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(this,
+                                "Please enter a valid number of prompts to buy in the Quota field.");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                            "Buy Prompts is only available for Personal Plan subscriptions.");
+                }
+            }
+        });
+    }
+
+    private void exportToFile() {
+        if (modelList.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No plans to export.");
+            return;
+        }
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("subscriptions.dat"))) {
+            oos.writeObject(modelList);
+            JOptionPane.showMessageDialog(this, "Data exported successfully to subscriptions.dat");
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Export failed: " + ex.getMessage());
+        }
+    }
+
+    private void loadFromFile() {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("subscriptions.dat"))) {
+            @SuppressWarnings("unchecked")
+            ArrayList<AIModel> loaded = (ArrayList<AIModel>) ois.readObject();
+            modelList = loaded;
+            outputArea.setText("Data loaded successfully from subscriptions.dat\n");
+            for (int i = 0; i < modelList.size(); i++) {
+                outputArea.append("Plan Index: " + i + "\n");
+                outputArea.append(modelList.get(i).display() + "\n");
+                outputArea.append("----------------------------\n");
+            }
+        } catch (FileNotFoundException ex) {
+            JOptionPane.showMessageDialog(this, "No saved data found (subscriptions.dat).");
+        } catch (IOException | ClassNotFoundException ex) {
+            JOptionPane.showMessageDialog(this, "Load failed: " + ex.getMessage());
+        }
     }
 
     private int getValidIndex() {

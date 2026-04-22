@@ -1,3 +1,4 @@
+
 /**
  * This file contains the code for the generic AI model with basic attributes
  * and methods. It serves as a base class for specific AI models that can be
@@ -9,7 +10,9 @@
  * The code is designed to be simple and easy to understand.
  */
 
-public abstract class AIModel {
+import java.io.Serializable;
+
+public abstract class AIModel implements Serializable {
     private String modelName;
     private double price;
     private int parameterCount;

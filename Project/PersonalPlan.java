@@ -26,13 +26,15 @@ public class PersonalPlan extends AIModel {
 
     @Override
     public String enterPrompt(String promptText, int responseLength) {
-        if (promptsRemaining > 0) {
-            promptsRemaining--;
-            return "Prompt Details: " + promptText +
-                    "\nToken Usage: " + responseLength +
-                    "\nRemaining Prompts: " + promptsRemaining;
-        } else {
-            return "Monthly plan has been reached.";
+        if (promptsRemaining <= 0) {
+            return "Monthly plan has been reached. Please buy more prompts or upgrade to a Pro plan.";
         }
+        if (responseLength > getContextWindow()) {
+            return "Failed to enter prompt. Prompt exceeds context window.";
+        }
+        promptsRemaining--;
+        return "Prompt Details: " + promptText +
+                "\nToken Usage: " + responseLength +
+                "\nRemaining Prompts: " + promptsRemaining;
     }
 }
