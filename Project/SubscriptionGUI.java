@@ -1,3 +1,10 @@
+
+/**
+ * It is the interface between user and the system.
+ * It allows user with crating, displaying and interacting 
+ * with Pro and Personal Plan using swing and awt
+ */
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -7,106 +14,183 @@ public class SubscriptionGUI extends JFrame {
 
     private ArrayList<AIModel> modelList = new ArrayList<>();
 
-    private JTextField modelNameField, priceField, parameterCountField, contextWindowField,
-            promptsField, slotsField, promptTextField, responseLengthField,
-            teamMemberNameField, indexField;
+    private JTextField personalNameField, personalPriceField, personalParamsField,
+            personalContextField, promptsField;
+
+    private JTextField proNameField, proPriceField, proParamsField,
+            proContextField, slotsField;
+
+    private JTextField indexField, promptTextField, responseLengthField,
+            teamMemberNameField, buyCountField;
+
     private JTextArea outputArea;
 
     public SubscriptionGUI() {
         setTitle("AI Model Subscription Management System");
-        setSize(850, 800);
+        setSize(1000, 750);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(5, 5));
 
-        JPanel inputPanel = new JPanel(new GridLayout(10, 2, 5, 5));
-        inputPanel.setBorder(BorderFactory.createTitledBorder("AI Model Subscription Details"));
+        // creating the main sections of the layout
+        JPanel topPanel = new JPanel(new GridLayout(1, 2, 10, 0));
+        topPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-        inputPanel.add(new JLabel("1. Model Name:"));
-        modelNameField = new JTextField();
-        inputPanel.add(modelNameField);
+        // setting up the personal plan inputs on the top left
+        JPanel personalPanel = new JPanel(new BorderLayout(5, 5));
+        personalPanel.setBorder(BorderFactory.createTitledBorder("Personal Plan"));
 
-        inputPanel.add(new JLabel("2. Pricing (per 1 Lakh Tokens):"));
-        priceField = new JTextField();
-        inputPanel.add(priceField);
+        JPanel pFields = new JPanel(new GridLayout(5, 2, 5, 5));
+        pFields.add(new JLabel("Model Name:"));
+        personalNameField = new JTextField();
+        pFields.add(personalNameField);
 
-        inputPanel.add(new JLabel("3. Parameter Count (Billions):"));
-        parameterCountField = new JTextField();
-        inputPanel.add(parameterCountField);
+        pFields.add(new JLabel("Pricing (per 1 Lakh Tokens):"));
+        personalPriceField = new JTextField();
+        pFields.add(personalPriceField);
 
-        inputPanel.add(new JLabel("4. Context Window (Tokens):"));
-        contextWindowField = new JTextField();
-        inputPanel.add(contextWindowField);
+        pFields.add(new JLabel("Parameter Count (Billions):"));
+        personalParamsField = new JTextField();
+        pFields.add(personalParamsField);
 
-        inputPanel.add(new JLabel("5. Initial Prompts Quota (Personal):"));
+        pFields.add(new JLabel("Context Window (Tokens):"));
+        personalContextField = new JTextField();
+        pFields.add(personalContextField);
+
+        pFields.add(new JLabel("Initial Prompts Quota:"));
         promptsField = new JTextField();
-        inputPanel.add(promptsField);
+        pFields.add(promptsField);
 
-        inputPanel.add(new JLabel("6. Initial Team Slots (Pro):"));
-        slotsField = new JTextField();
-        inputPanel.add(slotsField);
-
-        inputPanel.add(new JLabel("7. Prompt Text:"));
-        promptTextField = new JTextField();
-        inputPanel.add(promptTextField);
-
-        inputPanel.add(new JLabel("8. Response Length (tokens):"));
-        responseLengthField = new JTextField();
-        inputPanel.add(responseLengthField);
-
-        inputPanel.add(new JLabel("9. Team Member Name:"));
-        teamMemberNameField = new JTextField();
-        inputPanel.add(teamMemberNameField);
-
-        inputPanel.add(new JLabel("10. Index Number:"));
-        indexField = new JTextField();
-        inputPanel.add(indexField);
-
-        JPanel buttonPanel = new JPanel(new GridLayout(0, 4, 10, 10));
-        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
+        JPanel personalBtnsArea = new JPanel(new GridLayout(2, 1, 5, 5));
         JButton addPersonalBtn = new JButton("Add Personal Plan");
-        JButton addProBtn = new JButton("Add Pro Plan");
+        personalBtnsArea.add(addPersonalBtn);
+
+        JPanel bottomRowBtns = new JPanel(new GridLayout(1, 2, 5, 5));
         JButton displayAllBtn = new JButton("Display All");
+        bottomRowBtns.add(displayAllBtn);
         JButton clearBtn = new JButton("Clear");
-        JButton givePromptBtn = new JButton("Give a Prompt");
+        bottomRowBtns.add(clearBtn);
+        personalBtnsArea.add(bottomRowBtns);
+
+        personalPanel.add(pFields, BorderLayout.CENTER);
+        personalPanel.add(personalBtnsArea, BorderLayout.SOUTH);
+
+        // setting up the pro plan inputs on the top right
+        JPanel proPanel = new JPanel(new BorderLayout(5, 5));
+        proPanel.setBorder(BorderFactory.createTitledBorder("Pro Plan"));
+
+        JPanel prFields = new JPanel(new GridLayout(5, 2, 5, 5));
+        prFields.add(new JLabel("Model Name:"));
+        proNameField = new JTextField();
+        prFields.add(proNameField);
+
+        prFields.add(new JLabel("Pricing (per 1 Lakh Tokens):"));
+        proPriceField = new JTextField();
+        prFields.add(proPriceField);
+
+        prFields.add(new JLabel("Parameter Count (Billions):"));
+        proParamsField = new JTextField();
+        prFields.add(proParamsField);
+
+        prFields.add(new JLabel("Context Window (Tokens):"));
+        proContextField = new JTextField();
+        prFields.add(proContextField);
+
+        prFields.add(new JLabel("Initial Team Slots:"));
+        slotsField = new JTextField();
+        prFields.add(slotsField);
+
+        JPanel proBtnsArea = new JPanel(new GridLayout(2, 1, 5, 5));
+        JButton addProBtn = new JButton("Add Pro Plan");
+        proBtnsArea.add(addProBtn);
+
+        JPanel teamButtonsRow = new JPanel(new GridLayout(1, 2, 5, 5));
         JButton addTeamMemberBtn = new JButton("Add Team Member");
+        teamButtonsRow.add(addTeamMemberBtn);
         JButton removeMemberBtn = new JButton("Remove Team Member");
-        JButton checkTypeBtn = new JButton("Check Plan Type");
-        JButton exportBtn = new JButton("Export to File");
-        JButton loadBtn = new JButton("Load from File");
+        teamButtonsRow.add(removeMemberBtn);
+        proBtnsArea.add(teamButtonsRow);
+
+        proPanel.add(prFields, BorderLayout.CENTER);
+        proPanel.add(proBtnsArea, BorderLayout.SOUTH);
+
+        topPanel.add(personalPanel);
+        topPanel.add(proPanel);
+
+        // the bottom half contains our operations and the output text area
+        JPanel bottomPanel = new JPanel(new GridLayout(1, 2, 10, 0));
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
+
+        JPanel controlPanel = new JPanel(new BorderLayout(5, 5));
+        controlPanel.setBorder(BorderFactory.createTitledBorder("Operations"));
+
+        JPanel opFieldsPanel = new JPanel(new GridLayout(5, 2, 5, 5));
+
+        opFieldsPanel.add(new JLabel("Index Number:"));
+        indexField = new JTextField();
+        opFieldsPanel.add(indexField);
+
+        opFieldsPanel.add(new JLabel("Prompt Text:"));
+        promptTextField = new JTextField();
+        opFieldsPanel.add(promptTextField);
+
+        opFieldsPanel.add(new JLabel("Response Length (tokens):"));
+        responseLengthField = new JTextField();
+        opFieldsPanel.add(responseLengthField);
+
+        opFieldsPanel.add(new JLabel("Team Member Name:"));
+        teamMemberNameField = new JTextField();
+        opFieldsPanel.add(teamMemberNameField);
+
+        opFieldsPanel.add(new JLabel("Prompts to Buy:"));
+        buyCountField = new JTextField();
+        opFieldsPanel.add(buyCountField);
+
+        JPanel opButtonsPanel = new JPanel(new GridLayout(3, 1, 5, 5));
+        opButtonsPanel.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
+
+        JPanel r1 = new JPanel(new GridLayout(1, 2, 5, 5));
+        JButton givePromptBtn = new JButton("Give a Prompt");
         JButton buyPromptsBtn = new JButton("Buy Prompts");
+        r1.add(givePromptBtn);
+        r1.add(buyPromptsBtn);
 
-        buttonPanel.add(addPersonalBtn);
-        buttonPanel.add(addProBtn);
-        buttonPanel.add(displayAllBtn);
-        buttonPanel.add(clearBtn);
-        buttonPanel.add(givePromptBtn);
-        buttonPanel.add(addTeamMemberBtn);
-        buttonPanel.add(removeMemberBtn);
-        buttonPanel.add(checkTypeBtn);
-        buttonPanel.add(exportBtn);
-        buttonPanel.add(loadBtn);
-        buttonPanel.add(buyPromptsBtn);
+        JPanel r2 = new JPanel(new GridLayout(1, 2, 5, 5));
+        JButton exportBtn = new JButton("Export to File");
+        JButton loadBtn = new JButton("Import File");
+        r2.add(exportBtn);
+        r2.add(loadBtn);
 
-        JPanel topContainer = new JPanel(new BorderLayout());
-        topContainer.add(inputPanel, BorderLayout.NORTH);
-        topContainer.add(buttonPanel, BorderLayout.SOUTH);
+        JButton checkTypeBtn = new JButton("Check Plan Type");
 
-        add(topContainer, BorderLayout.NORTH);
+        opButtonsPanel.add(r1);
+        opButtonsPanel.add(r2);
+        opButtonsPanel.add(checkTypeBtn);
+
+        JPanel controlWrapper = new JPanel(new BorderLayout(5, 5));
+        controlWrapper.add(opFieldsPanel, BorderLayout.NORTH);
+        controlWrapper.add(opButtonsPanel, BorderLayout.CENTER);
+
+        controlPanel.add(controlWrapper, BorderLayout.NORTH);
 
         outputArea = new JTextArea();
         outputArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(outputArea);
-        add(scrollPane, BorderLayout.CENTER);
+        scrollPane.setBorder(BorderFactory.createTitledBorder("Output"));
 
-        // --- Button Listeners ---
+        bottomPanel.add(controlPanel);
+        bottomPanel.add(scrollPane);
+
+        add(topPanel, BorderLayout.NORTH);
+        add(bottomPanel, BorderLayout.CENTER);
+
+        // --- attaching events to all the buttons down here ---
 
         addPersonalBtn.addActionListener(e -> {
             try {
-                String name = modelNameField.getText();
-                double price = Double.parseDouble(priceField.getText());
-                int params = Integer.parseInt(parameterCountField.getText());
-                int window = Integer.parseInt(contextWindowField.getText());
+                String name = personalNameField.getText();
+                double price = Double.parseDouble(personalPriceField.getText());
+                int params = Integer.parseInt(personalParamsField.getText());
+                String window = personalContextField.getText();
                 int prompts = Integer.parseInt(promptsField.getText());
 
                 PersonalPlan plan = new PersonalPlan(name, price, params, window, prompts);
@@ -114,23 +198,24 @@ public class SubscriptionGUI extends JFrame {
                 JOptionPane.showMessageDialog(this, "Personal Plan Added successfully.");
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this,
-                        "Please fill all required numeric fields (Price, Parameters, Context Window, Quota) correctly.");
+                        "Please fill all required numeric fields (Price, Parameters, Quota) correctly.");
             }
         });
 
         addProBtn.addActionListener(e -> {
             try {
-                String name = modelNameField.getText();
-                double price = Double.parseDouble(priceField.getText());
-                int params = Integer.parseInt(parameterCountField.getText());
-                int window = Integer.parseInt(contextWindowField.getText());
+                String name = proNameField.getText();
+                double price = Double.parseDouble(proPriceField.getText());
+                int params = Integer.parseInt(proParamsField.getText());
+                String window = proContextField.getText();
                 int slots = Integer.parseInt(slotsField.getText());
 
                 ProPlan plan = new ProPlan(name, price, params, window, slots);
                 modelList.add(plan);
                 JOptionPane.showMessageDialog(this, "Pro Plan Added successfully.");
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Please fill all required numeric fields for Pro Plan correctly.");
+                JOptionPane.showMessageDialog(this,
+                        "Please fill all required numeric fields for Pro Plan correctly.");
             }
         });
 
@@ -144,33 +229,64 @@ public class SubscriptionGUI extends JFrame {
         });
 
         clearBtn.addActionListener(e -> {
-            modelNameField.setText("");
-            priceField.setText("");
-            parameterCountField.setText("");
-            contextWindowField.setText("");
+            personalNameField.setText("");
+            personalPriceField.setText("");
+            personalParamsField.setText("");
+            personalContextField.setText("");
             promptsField.setText("");
+            proNameField.setText("");
+            proPriceField.setText("");
+            proParamsField.setText("");
+            proContextField.setText("");
             slotsField.setText("");
             promptTextField.setText("");
             responseLengthField.setText("");
             teamMemberNameField.setText("");
             indexField.setText("");
+            buyCountField.setText("");
         });
 
         givePromptBtn.addActionListener(e -> {
             int index = getValidIndex();
             if (index != -1) {
                 AIModel model = modelList.get(index);
-                try {
-                    String text = promptTextField.getText();
-                    if (text.isEmpty()) {
-                        JOptionPane.showMessageDialog(this, "Please enter prompt text.");
-                        return;
+                if (model instanceof PersonalPlan) {
+                    try {
+                        String text = promptTextField.getText();
+                        if (text.isEmpty()) {
+                            JOptionPane.showMessageDialog(this, "Please enter prompt text.");
+                            return;
+                        }
+                        int length = Integer.parseInt(responseLengthField.getText());
+                        String result = ((PersonalPlan) model).enterPrompt(text, length);
+                        outputArea.append("Model Result (Index " + index + "):\n" + result + "\n");
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(this,
+                                "Please enter a valid numeric response length.");
                     }
-                    int length = Integer.parseInt(responseLengthField.getText());
-                    String result = model.enterPrompt(text, length);
-                    outputArea.append("Model Result (Index " + index + "):\n" + result + "\n");
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(this, "Please enter a valid numeric response length.");
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                            "Give a Prompt is only available for Personal Plan subscriptions.");
+                }
+            }
+        });
+
+        buyPromptsBtn.addActionListener(e -> {
+            int index = getValidIndex();
+            if (index != -1) {
+                AIModel model = modelList.get(index);
+                if (model instanceof PersonalPlan) {
+                    try {
+                        int count = Integer.parseInt(buyCountField.getText());
+                        String result = ((PersonalPlan) model).buyPrompts(count);
+                        outputArea.append(result + "\n");
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(this,
+                                "Please enter a valid number of prompts to buy in the 'Prompts to Buy' field.");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                            "Buy Prompts is only available for Personal Plan subscriptions.");
                 }
             }
         });
@@ -229,26 +345,6 @@ public class SubscriptionGUI extends JFrame {
 
         exportBtn.addActionListener(e -> exportToFile());
         loadBtn.addActionListener(e -> loadFromFile());
-
-        buyPromptsBtn.addActionListener(e -> {
-            int index = getValidIndex();
-            if (index != -1) {
-                AIModel model = modelList.get(index);
-                if (model instanceof PersonalPlan) {
-                    try {
-                        int count = Integer.parseInt(promptsField.getText());
-                        String result = ((PersonalPlan) model).buyPrompts(count);
-                        outputArea.append(result + "\n");
-                    } catch (NumberFormatException ex) {
-                        JOptionPane.showMessageDialog(this,
-                                "Please enter a valid number of prompts to buy in the Quota field.");
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(this,
-                            "Buy Prompts is only available for Personal Plan subscriptions.");
-                }
-            }
-        });
     }
 
     private void exportToFile() {
@@ -256,7 +352,8 @@ public class SubscriptionGUI extends JFrame {
             JOptionPane.showMessageDialog(this, "No plans to export.");
             return;
         }
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("subscriptions.dat"))) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(
+                new FileOutputStream("subscriptions.dat"))) {
             oos.writeObject(modelList);
             JOptionPane.showMessageDialog(this, "Data exported successfully to subscriptions.dat");
         } catch (IOException ex) {
@@ -265,7 +362,8 @@ public class SubscriptionGUI extends JFrame {
     }
 
     private void loadFromFile() {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("subscriptions.dat"))) {
+        try (ObjectInputStream ois = new ObjectInputStream(
+                new FileInputStream("subscriptions.dat"))) {
             @SuppressWarnings("unchecked")
             ArrayList<AIModel> loaded = (ArrayList<AIModel>) ois.readObject();
             modelList = loaded;
@@ -289,11 +387,13 @@ public class SubscriptionGUI extends JFrame {
             displayNumber = Integer.parseInt(inputText);
             if (displayNumber < 0 || displayNumber >= modelList.size()) {
                 JOptionPane.showMessageDialog(this,
-                        "Index falls outside the acceptable range (0 to " + (modelList.size() - 1) + ").");
+                        "Index falls outside the acceptable range (0 to "
+                                + (modelList.size() - 1) + ").");
                 return -1;
             }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Input cannot be parsed as an integer. Please enter a valid number.");
+            JOptionPane.showMessageDialog(this,
+                    "Input cannot be parsed as an integer. Please enter a valid number.");
             return -1;
         }
         return displayNumber;

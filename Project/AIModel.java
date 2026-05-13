@@ -1,6 +1,6 @@
 
 /**
- * This file contains the code for the generic AI model with basic attributes
+ *This file contains the code for the generic AI model with basic attributes
  * and methods. It serves as a base class for specific AI models that can be
  * implemented in the future.
  * The AIModel class includes attributes such as model name, version, and
@@ -8,6 +8,9 @@
  * model. This structure allows for easy extension and customization of AI
  * models while maintaining a consistent interface for interaction.
  * The code is designed to be simple and easy to understand.
+ * 
+ * @author (Divyamani Khawas)
+ * 
  */
 
 import java.io.Serializable;
@@ -16,9 +19,9 @@ public abstract class AIModel implements Serializable {
     private String modelName;
     private double price;
     private int parameterCount;
-    private int contextWindow;
+    private String contextWindow;
 
-    public AIModel(String modelName, double price, int parameterCount, int contextWindow) {
+    public AIModel(String modelName, double price, int parameterCount, String contextWindow) {
         this.modelName = modelName;
         this.price = price;
         this.parameterCount = parameterCount;
@@ -37,23 +40,15 @@ public abstract class AIModel implements Serializable {
         return parameterCount;
     }
 
-    public int getContextWindow() {
+    public String getContextWindow() {
         return contextWindow;
-    }
-
-    public int calculateTokens(String prompt) {
-        if (prompt == null || prompt.isEmpty()) {
-            return 0;
-        }
-        String[] tokens = prompt.split("\\s+");
-        return tokens.length;
     }
 
     public String display() {
         return "Model Name: " + modelName +
                 "\nPrice: " + price + " NPR per 1 Lakh tokens" +
                 "\nParameter Count: " + parameterCount + "B" +
-                "\nContext Window: " + contextWindow + "tokens";
+                "\nContext Window: " + contextWindow + " tokens";
     }
 
     public abstract String enterPrompt(String prompt, int tokens);
